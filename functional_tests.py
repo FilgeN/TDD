@@ -4,19 +4,19 @@ import unittest
 class NewVisitorTest(unittest.TestCase):
 	"""docstring for NewVisitorTest"""
 	def setUp(self):
-		browser = webdriver.Firefox()
+		self.browser = webdriver.Firefox()
+		self.browser.implicitly_wait(3)
 
 	def tearDown(self):
 		self.browser.quit()
-		self.browser.implicitly_wait(3)
 
 	def test_can_start_a_list_and_retrieve_it_later(self):
 		#Edyta dowiedziala sie o nowej, wspanialej aplikacji w postaci listy rzeczy do zrobienia.
 		#Postanowila wiec wejsc na strone glowa tej aplikacji.
-		browser.get('http://localhost:8000')
+		self.browser.get('http://localhost:8000')
 		
 		#Zwrocila uwage ze tytul strony i naglowek zawieraja slowo 'Listy'
-		self.assertIn('Listy', in browser.title)
+		self.assertIn('Lista', self.browser.title)
 		self.fail('Zakonczenie testu!')
 		#Od razu jest zachecona, aby wpisac rzeczy do zrobienia
 		
