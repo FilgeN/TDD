@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
@@ -17,18 +18,33 @@ class NewVisitorTest(unittest.TestCase):
 		
 		#Zwrocila uwage ze tytul strony i naglowek zawieraja slowo 'Listy'
 		self.assertIn('Lista', self.browser.title)
-		self.fail('Zakonczenie testu!')
+		header_text = self.browser.find_element_by_tag_name('h1').text 
+		self.assertIn('Lista', header_text)
+
 		#Od razu jest zachecona, aby wpisac rzeczy do zrobienia
-		
+		input_box = self.browser.find_element_by_id('id_new_item')
+		self.assertEqual(
+			input_box.get_attribute('placeholder'),
+			'Wpisz rzecz do zrobienia'
+		)
+
 		#W polu tesktowym wpisala "Kupic pedzle o rozmiarze 8,9" 
 		#( malowanie jest hobby Edyty )
-		
+		input_box.send_keys('Kupic pawie piora')
+
 		#Po nacisnieciu klawisza 'Enter' strona zostala uaktualniona i wyswietla
 		# 1. Kupic pedzle o rozmiarze 8,9 jako element listy rzeczy do zrobienia
+		input_box.send_keys(Keys.ENTER)
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_element_by_tag_name('tr')
+		self.assertTrue(
+			any(row.text == '1: Kupić pawie pióra' for row in rows)
+		)
 		
 		#Na stronie nadal znajduje sie pole tekstowe zachęcajace do podania kolejnego zadania
 		#Edyta wpisala: "Uzyc pedzli do namalowania pejzazu" (Edyta jest bardzo skrupulatna)
-		
+		self.fail('Zakonczenie testu!')
+
 		#Strona zostala ponownie uaktualniona i teraz wyswietla dwa elementy na liscie rzeczy do zrobienia
 		
 		#Edyta byla ciekawa, czy witryna zapamieta jej liste. Zwrocila uwage na wygenerowany dla niej
