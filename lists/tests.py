@@ -1,11 +1,12 @@
 from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.http import HttpRequest
+from django.template.loader import render_to_string
 
 from lists.views import home_page
 
 # Create your tests here.
-class HomepAgetest(TestCase):
+class HomePagetest(TestCase):
 	"""docstring for HomepAgetest"""
 
 	def test_root_url_resolvers_to_home_page_view(self):
@@ -15,7 +16,5 @@ class HomepAgetest(TestCase):
 	def test_home_page_return_correct_html(self):
 		request = HttpRequest()
 		response = home_page(request)
-		# self.assertEqual( len(response.content), 4)
-		self.assertTrue(response.content.startswith(b'<html>'))
-		self.assertIn(b'<title>Lista rzeczy do zrobienia</title>', response.content)
-		self.assertTrue(response.content.endswith(b'</html>'))
+		excepted_html = render_to_string('home.html')
+		self.assertEqual(response.content.decode(), excepted_html)

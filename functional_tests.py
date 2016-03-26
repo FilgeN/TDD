@@ -17,9 +17,9 @@ class NewVisitorTest(unittest.TestCase):
 		self.browser.get('http://localhost:8000')
 		
 		#Zwrocila uwage ze tytul strony i naglowek zawieraja slowo 'Listy'
-		self.assertIn('Lista', self.browser.title)
+		self.assertIn('Listy', self.browser.title)
 		header_text = self.browser.find_element_by_tag_name('h1').text 
-		self.assertIn('Lista', header_text)
+		self.assertIn('lista', header_text)
 
 		#Od razu jest zachecona, aby wpisac rzeczy do zrobienia
 		input_box = self.browser.find_element_by_id('id_new_item')
@@ -36,9 +36,12 @@ class NewVisitorTest(unittest.TestCase):
 		# 1. Kupic pedzle o rozmiarze 8,9 jako element listy rzeczy do zrobienia
 		input_box.send_keys(Keys.ENTER)
 		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_element_by_tag_name('tr')
+		rows = table.find_elements_by_tag_name('tr')
+		print( "blallblaslasladals\n" )
+		print(  type(rows) )
 		self.assertTrue(
-			any(row.text == '1: Kupić pawie pióra' for row in rows)
+			any(row.text == '1: Kupić pawie pióra' for row in rows),
+			"Nowy element nie znajduje sie w tabeli!"
 		)
 		
 		#Na stronie nadal znajduje sie pole tekstowe zachęcajace do podania kolejnego zadania
