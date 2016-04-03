@@ -26,6 +26,10 @@ class HomePagetest(TestCase):
 		request.POST['item_text'] = 'Nowy element listy'
 
 		response = home_page(request)
+
+		self.assertEqual(Item.objects.count(), 1)
+		new_item = Item.objects.first()
+		self.assertEqual(new_item.text, 'Nowy element listy')
 		
 		self.assertIn('Nowy element listy', response.content.decode() )
 		excepted_html = render_to_string(
@@ -51,3 +55,9 @@ class HomePagetest(TestCase):
 
 		self.assertEqual(first_saved_item.text, 'Absolutnie pierwszy element listy')
 		self.assertEqual(second_saved_item.text, 'Drugi element')
+
+
+	def test_home_page_only_saves_item_when_necessary(self):
+		request = HttpRequest()
+		home_page(request)
+		self.assertEqual(Item.objects.count(), 0)
