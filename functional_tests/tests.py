@@ -43,6 +43,8 @@ class NewVisitorTest(LiveServerTestCase):
 		#Po nacisnieciu klawisza 'Enter' strona zostala uaktualniona i wyswietla
 		# 1. Kupic pawie piora jako element listy rzeczy do zrobienia
 		input_box.send_keys(Keys.ENTER)
+		edith_list_url = self.browser.current_url
+		self.assertRegex(edith_list_url, '/lists/.+')
 		self.check_for_row_in_list_table('1: Kupic pawie piora')
 
 		#Na stronie nadal znajduje sie pole tekstowe zachęcajace do podania kolejnego zadania
@@ -52,6 +54,51 @@ class NewVisitorTest(LiveServerTestCase):
 		input_box.send_keys(Keys.ENTER)		
 
 		self.check_for_row_in_list_table('2: Uzyc pawich pior do zrobienia przynety')
+
+		#Teraz nowy uzytkownik Franek zaczyna korzystac z witryny
+
+		##Uzywamy nowej sesji przegladarki internetowej, aby miec pewnosc, ze zadne
+		##informacje z sesji Edyty nie zostana ujawnione - na przyklad przez cookies
+		self.browser.quit()
+		self.browser = webdriver.Firefox()
+		
+		#Franek odwiedza strone glowna
+		#Nie znajduje zadnych sladow listy Edyty
+		self.browser.get(self.live_server_url)
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Kupic pawie piora',page_text)
+		self.assertNotIn('zrobienia przynety',page_text)
+
+		#Franek tworzy nowa liste, wprowadzajac nowy element
+		input_box = self.browser.find_element_by_id('id_new_item')
+		input_box.send_keys('Kupic mleko')
+		input_box.send_keys('Keys.ENTER')
+
+		#Franek otrzymuje unikatowy adres URL prowadzacy do jego listy
+		francis_list_url = self.browser.current_url
+		self.assertRegex(francis_list_url, '/lists/.+')
+		self.assertNotEqual(francis_list_url, edith_list_url)
+
+		#Ponownie niema zadnego sladu po liscie Edyty
+		page_text = self.browser.find_element_by_tag_name('body').text
+		self.assertNotIn('Kupic pawie piora',page_text)
+		self.assertIn('Kupic mleko',page_text)
+
+		#Usatysfakcjonowani, oboje klada sie spac
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		#Edyta byla ciekawa, czy witryna zapamieta jej liste. Zwrocila uwage na wygenerowany dla niej
 		#unikatowy adres URL, obok ktorego znajduje sie pewien tekst z wyjasnieniem
