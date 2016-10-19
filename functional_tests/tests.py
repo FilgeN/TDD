@@ -21,6 +21,7 @@ class NewVisitorTest(LiveServerTestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
+    '''
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edyta dowiedziala sie o nowej, wspanialej aplikacji w postaci listy rzeczy do zrobienia.
         # Postanowila wiec wejsc na strone glowa tej aplikacji.
@@ -92,8 +93,32 @@ class NewVisitorTest(LiveServerTestCase):
         # Usatysfakcjonowani, oboje klada sie spac
         # Edyta byla ciekawa, czy witryna zapamieta jej liste. Zwrocila uwage na wygenerowany dla niej
         # unikatowy adres URL, obok ktorego znajduje sie pewien tekst z wyjasnieniem
-        self.fail('Zakonczenie testu!')
 
+        self.fail('Zakonczenie testu!')
         # Przechodzi pod podany adres URL i widzi wyswietlona swoja liste rzeczy do zrobienia
 
         # Usatysfakcjonowana kladzie sie spac
+    '''
+
+
+    def test_layout_and_styling(self):
+        #Edyta weszla na strone glowna
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_size(1024, 768)
+
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + (inputbox.size['width'] / 2.),
+            512,
+            delta=10
+        )
+
+        # Edyta utworzyła nową listę i zobaczyła,
+        # że pole tekstowe nadal jest wyśrodkowane.
+        inputbox.send_keys('testing\n')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+            inputbox.location['x'] + inputbox.size['width'] / 2,
+            512,
+            delta=10
+        )
