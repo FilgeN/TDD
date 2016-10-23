@@ -1,10 +1,10 @@
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
     """docstring for NewVisitorTest"""
 
     def setUp(self):
@@ -100,9 +100,8 @@ class NewVisitorTest(LiveServerTestCase):
         # Usatysfakcjonowana kladzie sie spac
     '''
 
-
     def test_layout_and_styling(self):
-        #Edyta weszla na strone glowna
+        # Edyta weszla na strone glowna
         self.browser.get(self.live_server_url)
         self.browser.set_window_size(1024, 768)
 
