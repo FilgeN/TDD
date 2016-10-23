@@ -2,10 +2,25 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
+import sys
 
 
 class NewVisitorTest(StaticLiveServerTestCase):
     """docstring for NewVisitorTest"""
+
+    @classmethod
+    def setUpClass(cls):
+        for arg in sys.argv:
+            if 'liveserver' in arg:
+                cls.server_url = 'http://' + arg.split('=')[1]
+                return
+        super().setUpClass()
+        cls.server_url = cls.live_server_url
+
+    @classmethod
+    def tearDownClass(cls):
+        if cls.server_url == cls.live_server_url:
+            super().tearDownClass()
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -25,12 +40,12 @@ class NewVisitorTest(StaticLiveServerTestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edyta dowiedziala sie o nowej, wspanialej aplikacji w postaci listy rzeczy do zrobienia.
         # Postanowila wiec wejsc na strone glowa tej aplikacji.
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
 
         # Zwrocila uwage ze tytul strony i naglowek zawieraja slowo 'Listy'
         self.assertIn('Listy', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Utworz', header_text)
+        self.assertIn('Utwórz', header_text)
 
         # Od razu jest zachecona, aby wpisac rzeczy do zrobienia
         input_box = self.browser.find_element_by_id('id_new_item')
@@ -67,7 +82,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
 
         # Franek odwiedza strone glowna
         # Nie znajduje zadnych sladow listy Edyty
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Kupic pawie piora', page_text)
         self.assertNotIn('zrobienia przynety', page_text)
@@ -94,15 +109,15 @@ class NewVisitorTest(StaticLiveServerTestCase):
         # Edyta byla ciekawa, czy witryna zapamieta jej liste. Zwrocila uwage na wygenerowany dla niej
         # unikatowy adres URL, obok ktorego znajduje sie pewien tekst z wyjasnieniem
 
-        self.fail('Zakonczenie testu!')
         # Przechodzi pod podany adres URL i widzi wyswietlona swoja liste rzeczy do zrobienia
 
         # Usatysfakcjonowana kladzie sie spac
+        # self.fail('Zakonczenie testu!')
     '''
 
     def test_layout_and_styling(self):
         # Edyta weszla na strone glowna
-        self.browser.get(self.live_server_url)
+        self.browser.get(self.server_url)
         self.browser.set_window_size(1024, 768)
 
         inputbox = self.browser.find_element_by_id('id_new_item')
